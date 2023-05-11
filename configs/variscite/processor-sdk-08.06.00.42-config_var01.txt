@@ -12,7 +12,7 @@ meta-arm,https://git.yoctoproject.org/meta-arm,dunfell,c4f04f3fb66f8f4365b08b553
 oe-core,https://git.openembedded.org/openembedded-core,dunfell,daaee6fcb0d201f041678af433d8e1cd6f924d09,layers=meta
 meta-sysrepo,https://github.com/sartura/meta-sysrepo.git,master,8bcc6151897c0e67c2931c78340477bf3a12d8cb,layers=
 meta-jupyter,https://github.com/Xilinx/meta-jupyter.git,master,82db248e2eca36e52cbeafe599b755dc87720383,layers=
-meta-variscite-bsp-ti,https://github.com/varigit/meta-variscite-bsp-ti.git,dunfell_var01,191a108c0add7845385201506917107a1def3fa2,layers=
+meta-variscite-bsp-ti,https://github.com/varigit/meta-variscite-bsp-ti.git,dunfell_var01,835e11c02fdd173820e2089e57f819d8b3e7a02a,layers=
 meta-variscite-sdk-ti,https://github.com/varigit/meta-variscite-sdk-ti.git,dunfell_var01,06464b6217ea4108ee238dac5e6024860f6cbe7b,layers=
 meta-swupdate,https://github.com/sbabic/meta-swupdate.git,dunfell,c8358f2e0c3d6727cc31721924770f557af49d39,layers=
 OECORELAYERCONF=./sample-files/bblayers.conf.sample
