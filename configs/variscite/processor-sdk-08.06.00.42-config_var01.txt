@@ -13,7 +13,7 @@ oe-core,https://git.openembedded.org/openembedded-core,dunfell,daaee6fcb0d201f04
 meta-sysrepo,https://github.com/sartura/meta-sysrepo.git,master,8bcc6151897c0e67c2931c78340477bf3a12d8cb,layers=
 meta-jupyter,https://github.com/Xilinx/meta-jupyter.git,master,82db248e2eca36e52cbeafe599b755dc87720383,layers=
 meta-variscite-bsp-ti,https://github.com/varigit/meta-variscite-bsp-ti.git,dunfell_var01,f16ee63454f9372afc25502e96dba3fdb0b6df41,layers=
-meta-variscite-sdk-ti,https://github.com/varigit/meta-variscite-sdk-ti.git,dunfell_var01,a91549396d6ca37ffca17f0758e91c584f2da3f1,layers=
+meta-variscite-sdk-ti,https://github.com/varigit/meta-variscite-sdk-ti.git,dunfell_var01,55d616cbe91378704ab517b5ffe20f3d4736af5b,layers=
 meta-swupdate,https://github.com/sbabic/meta-swupdate.git,dunfell,c8358f2e0c3d6727cc31721924770f557af49d39,layers=
 OECORELAYERCONF=./sample-files/bblayers.conf.sample
 OECORELOCALCONF=./sample-files/local-arago64.conf.sample
