@@ -1,0 +1,20 @@
+# This file takes repo entries in the format
+# repo name,repo uri,repo branch,repo commit[,layers=layer1:layer2...:layern]
+
+bitbake,https://git.openembedded.org/bitbake,1.46,d22cc1e
+meta-processor-sdk,https://git.ti.com/cgit/processor-sdk/meta-processor-sdk,dunfell,716008bc1003478d2e6c3e0c741f0fd80dcee5fb,layers=
+meta-arago,https://github.com/varigit/meta-arago.git,08.02.00.006-var01,91800b0d6f5db1810fd8f3f823417736ad6b6226,layers=meta-arago-distro:meta-arago-extras
+#meta-browser,https://github.com/OSSystems/meta-browser.git,master,5f365ef0f842ba4651efe88787cf9c63bc8b6cb3,layers=
+meta-qt5,https://github.com/meta-qt5/meta-qt5.git,dunfell,5ef3a0f,layers=
+meta-virtualization,https://git.yoctoproject.org/meta-virtualization,dunfell,c5f61e5,layers=
+meta-openembedded,https://git.openembedded.org/meta-openembedded,dunfell,0722ff6,layers=meta-networking:meta-python:meta-oe:meta-gnome:meta-filesystems:meta-multimedia
+meta-ti,https://git.yoctoproject.org/meta-ti,dunfell,08.02.00.006,layers=
+meta-arm,https://git.yoctoproject.org/meta-arm,dunfell,c4f04f3,layers=meta-arm:meta-arm-toolchain
+oe-core,https://git.openembedded.org/openembedded-core,dunfell,51844f2,layers=meta
+meta-variscite-bsp-ti,https://github.com/varigit/meta-variscite-bsp-ti.git,dunfell_var01,3a96b6ef149b7fa7269aa3f63b7744bb5a380d1e,layers=
+meta-variscite-sdk-ti,https://github.com/varigit/meta-variscite-sdk-ti.git,dunfell_var01,759b526aec26d863ffe304cbcce62b1d83b396f6,layers=
+meta-variscite-bsp-common,https://github.com/varigit/meta-variscite-bsp-common.git,dunfell-var01,e1b1573ddf0d2f362050e93f75f1d5c16a11d7d4,layers=
+meta-variscite-sdk-common,https://github.com/varigit/meta-variscite-sdk-common.git,dunfell-var01,0fd00ffc16251f28ace9f914f681d7d028313680,layers=
+meta-swupdate,https://github.com/sbabic/meta-swupdate.git,dunfell,c8358f2e0c3d6727cc31721924770f557af49d39,layers=
+OECORELAYERCONF=./sample-files/bblayers.conf.sample
+OECORELOCALCONF=./sample-files/local-arago64.conf.sample
