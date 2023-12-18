@@ -13,7 +13,7 @@ oe-core,https://git.openembedded.org/openembedded-core,dunfell,daaee6fcb0d201f04
 meta-sysrepo,https://github.com/sartura/meta-sysrepo.git,master,8bcc6151897c0e67c2931c78340477bf3a12d8cb,layers=
 meta-jupyter,https://github.com/Xilinx/meta-jupyter.git,master,82db248e2eca36e52cbeafe599b755dc87720383,layers=
 meta-variscite-bsp-ti,https://github.com/varigit/meta-variscite-bsp-ti.git,dunfell_var01,26c7491655e7a88e3e74fd3aebf7bd12c9e91166,layers=
-meta-variscite-sdk-ti,https://github.com/varigit/meta-variscite-sdk-ti.git,dunfell_var01,9b79ce1f34e1b5cb7f42a320e97e771abe47e4c7,layers=
+meta-variscite-sdk-ti,https://github.com/varigit/meta-variscite-sdk-ti.git,dunfell_var01,e001eae844eacdc6dd85099504f10f9c4ccab1ab,layers=
 meta-variscite-bsp-common,https://github.com/varigit/meta-variscite-bsp-common.git,dunfell-var01,e1b1573ddf0d2f362050e93f75f1d5c16a11d7d4,layers=
 meta-variscite-sdk-common,https://github.com/varigit/meta-variscite-sdk-common.git,dunfell-var01,292a244d822fab131f7e65022f8b37b4f10bbe23,layers=
 meta-swupdate,https://github.com/sbabic/meta-swupdate.git,dunfell,c8358f2e0c3d6727cc31721924770f557af49d39,layers=
