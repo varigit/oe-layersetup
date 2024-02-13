@@ -12,7 +12,7 @@ meta-arm,https://git.yoctoproject.org/meta-arm,dunfell,c4f04f3fb66f8f4365b08b553
 oe-core,https://git.openembedded.org/openembedded-core,dunfell,daaee6fcb0d201f041678af433d8e1cd6f924d09,layers=meta
 meta-sysrepo,https://github.com/sartura/meta-sysrepo.git,master,8bcc6151897c0e67c2931c78340477bf3a12d8cb,layers=
 meta-jupyter,https://github.com/Xilinx/meta-jupyter.git,master,82db248e2eca36e52cbeafe599b755dc87720383,layers=
-meta-variscite-bsp-ti,https://github.com/varigit/meta-variscite-bsp-ti.git,dunfell_var01,185a8cb880a57729fd60cda922ebacd384400985,layers=
+meta-variscite-bsp-ti,https://github.com/varigit/meta-variscite-bsp-ti.git,dunfell_var01,11fd170331f9fd4ab2ee22a6fdeb2ac8d51f5d48,layers=
 meta-variscite-sdk-ti,https://github.com/varigit/meta-variscite-sdk-ti.git,dunfell_var01,e001eae844eacdc6dd85099504f10f9c4ccab1ab,layers=
 meta-variscite-bsp-common,https://github.com/varigit/meta-variscite-bsp-common.git,dunfell-var01,e1b1573ddf0d2f362050e93f75f1d5c16a11d7d4,layers=
 meta-variscite-sdk-common,https://github.com/varigit/meta-variscite-sdk-common.git,dunfell-var01,292a244d822fab131f7e65022f8b37b4f10bbe23,layers=
