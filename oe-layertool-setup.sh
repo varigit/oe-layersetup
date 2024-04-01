@@ -45,8 +45,8 @@ interactive="n" # flag for interactive mode.  Default is n
 resethead="n" # flag for reset head mode.  Default is n
 layers="" # variable holding the layers to add to bblayers.conf
 output="" # variable holding the output to write to outputfile
-scriptdir=`pwd` # directory of this calling script
-oebase=`pwd` # variable to hold base directory
+scriptdir=$(pwd) # directory of this calling script
+oebase=$(pwd) # variable to hold base directory
 sourcedir="" # directory where repos will be cloned
 builddir="" # directory for builds
 confdir="" # directory for build configuration files
@@ -126,26 +126,26 @@ exit 1
 
 check_input() {
     # Check that at least -i or -f was used
-    if [ "$interactive" = "n" -a "x$inputfile" = "x" ]
+    if [ "$interactive" = "n" ] && [ -z "$inputfile" ]
     then
-        echo "ERROR: You must either use this script with the -i or -f options"
+        printf '%s\n' "ERROR: You must either use this script with the -i or -f options"
         usage
     fi
 
     # If an input file was given make sure it exists
-    if [ ! -f $inputfile ]
+    if [ ! -f "$inputfile" ]
     then
-        echo "ERROR: the file \"$inputfile\" given for inputfile does not exist"
+        printf '%s\n' "ERROR: the file \"$inputfile\" given for inputfile does not exist"
         usage 
     fi
 
     # If directories do not exist then create them
     for f in sourcedir builddir confdir
     do
-        eval t="$"$f
-        if [ ! -d $t ]
+        eval t="\$${f}"
+        if [ ! -d "$t" ]
         then
-            mkdir -p $t
+            mkdir -p "$t"
         fi
     done
 
@@ -154,23 +154,31 @@ check_input() {
 
 # Input is a line of the form OECORE.*=value
 parse_oecore_line() {
-    var=`echo $1 | cut -d= -f1`
-    val=`echo $1 | cut -d= -f2`
-    eval $var=$val
+    var=$(printf '%s\n' "$1" | cut -d= -f1)
+    val=$(printf '%s\n' "$1" | cut -d= -f2)
+    export "$var"="$val"
 }
 
 # Input is a line of the form BITBAKE.*=value
 parse_bitbake_line() {
-    var=`echo $1 | cut -d= -f1`
-    val=`echo $1 | cut -d= -f2`
-    eval $var=$val
+    var=$(printf '%s\n' "$1" | cut -d= -f1)
+    val=$(printf '%s\n' "$1" | cut -d= -f2)
+    export "$var"="$val"
 }
 
 # Input is a line of the form LOCALCONF:.*=value
 parse_localconf_line() {
-    localconf=`echo "$1" | cut -d: -f2`
-    echo "$localconf" >> $oebase/tmp_append_local.conf
+    localconf=$(printf '%s\n' "$1" | cut -d: -f2-100)
+    printf '%s\n' "$localconf" >> "$oebase/tmp_append_local.conf"
 }
+
+# Input is a line of the form MOTD:<msg>
+parse_motd_line() {
+    motd=$(printf '%s\n' "$1" | cut -d: -f2-100)
+    printf '%s\n' "$motd" >> "$oebase/tmp_motd"
+    printf '%s\n' "$motd"
+}
+
 
 
 
@@ -189,51 +197,64 @@ parse_repo_line() {
 
     # split the line on the comma separators
     # use the prefix if it was set.
-    eval $prefix"name"=`echo $1 | cut -d, -f1`
-    eval $prefix"uri"=`echo $1 | cut -d, -f2`
-    eval $prefix"branch"=`echo $1 | cut -d, -f3`
-    eval $prefix"commit"=`echo $1 | cut -d, -f4`
-    parsed_layers=`echo $1 | cut -d, -f5-`
+    export "${prefix}name"="$(printf '%s\n' "$1" | cut -d, -f1)"
+    export "${prefix}uri"="$(printf '%s\n' "$1" | cut -d, -f2)"
+    export "${prefix}branch"="$(printf '%s\n' "$1" | cut -d, -f3)"
+    export "${prefix}commit"="$(printf '%s\n' "$1" | cut -d, -f4)"
+    parsed_layers=$(printf '%s\n' "$1" | cut -d, -f5-)
 
     # If no layers= was used, then don't add any layers
     temp_layers="none"
 
     # If layers= was used then set the layers variable, empty list would add all found layers
-    if [ "x$parsed_layers" != "x" ]
+    if [ -n "$parsed_layers" ]
     then
         temp_layers=""
-        temp=`echo $parsed_layers | cut -d= -f2`
-        # temporarily reset the IFS value to : to split the layers
-        for x in `IFS=":";echo $temp`
+        temp=$(printf '%s\n' "$parsed_layers" | cut -d= -f2)
+        # sanity check for whitespace in layer names string
+        if printf '%s\n' "$temp" | grep -q '\s'
+        then
+            printf '%s\n' "Whitespace character detected in layer names string!" \
+                          "This is currently unsupported." ;
+            exit 1
+        fi
+        # use tr to split the layers since we assume layer names don't have
+        # whitespace characters later anyway
+        for x in $(printf '%s\n' "$temp" | tr ':' ' ')
         do
             # Add the $name value to each layer so that we have consistency
             # with how the layers are represented between the saved value
             # and the dynamically parsed values
-            temp_layers="$temp_layers""$name/$x "
+            temp_layers="${temp_layers}${name}/${x} "
         done
     fi
 
     # Assign the layers.  If the temp_layers is empty then set the layers
     # to all and we will fill in the actual layers in the later steps.
-    if [ "x$temp_layers" = "x" ]
+    if [ -z "$temp_layers" ]
     then
-        eval $prefix"repo_layers"="all"
-    elif [ "x$temp_layers" = "xnone" ]
+        export "${prefix}repo_layers"="all"
+    elif [ "$temp_layers" = "none" ]
     then
-        eval $prefix"repo_layers"="none"
+        export "${prefix}repo_layers"="none"
     else
-        eval $prefix"repo_layers"='$temp_layers'
+        export "${prefix}repo_layers"="$temp_layers"
     fi
 }
 
 
 parse_input_file() {
-    if [ -e $oebase/tmp_append_local.conf ]
+    if [ -e "$oebase/tmp_append_local.conf" ]
     then
-        rm $oebase/tmp_append_local.conf
+        rm "$oebase/tmp_append_local.conf"
     fi
 
-    while read line
+    if [ -e "$oebase/tmp_motd" ]
+    then
+        rm "$oebase/tmp_motd"
+    fi
+
+    while read -r line
     do
         # clean the parsing variables for each run
         name=""
@@ -243,53 +264,55 @@ parse_input_file() {
         repo_layers=""
 
         # Skip empty lines
-        if [ "x$line" = "x" ]
+        if [ -z "$line" ]
         then
             continue
         fi
 
         # Skip comment lines
-        echo $line | grep -e "^#" > /dev/null
-        if [ "$?" = "0" ]
+        if printf '%s\n' "$line" | grep -q -e "^#"
         then
             continue
         fi
 
         # If the line starts with OECORE then parse the OECORE setting
-        echo $line | grep -e "^OECORE.*=" > /dev/null
-        if [ "$?" = "0" ]
+        if printf '%s\n' "$line" | grep -q -e "^OECORE.*="
         then
-            parse_oecore_line $line
-            output="$output""$line\n"
+            parse_oecore_line "$line"
+            output="${output}${line}\n"
             continue
         fi
 
         # If the line starts with BITBAKE then parse the BITBAKE setting
-        echo $line | grep -e "^BITBAKE.*=" > /dev/null
-        if [ "$?" = "0" ]
+        if printf '%s\n' "$line" | grep -q -e "^BITBAKE.*="
         then
-            parse_bitbake_line $line
-            output="$output""$line\n"
+            parse_bitbake_line "$line"
+            output="${output}${line}\n"
             continue
         fi
 
         # If the line starts with LOCALCONF: then parse the LOCALCONF: setting
-        echo $line | grep -e "^LOCALCONF:.*" > /dev/null
-        if [ "$?" = "0" ]
+        if printf '%s\n' "$line" | grep -q -e "^LOCALCONF:.*"
         then
             parse_localconf_line "$line"
-            output="$output""$line\n"
+            output="${output}${line}\n"
             continue
         fi
+
+        # If the line starts with MOTD: then parse the MOTD: setting
+        if printf '%s\n' "$line" | grep -q -e "^MOTD:.*"
+        then
+            parse_motd_line "$line"
+            continue
+        fi
+
         # Since the line is not a comment or an OECORE setting let's assume
         # it is a repository information line and parse it
-        parse_repo_line $line
-
-        configure_repo
+        parse_repo_line "$line"
 
         # if the return from configure repo was non-zero then do not save
         # the output
-        if [ "$?" != "0" ]
+        if ! configure_repo
         then
             continue
         fi
@@ -297,69 +320,69 @@ parse_input_file() {
         # Create the repository line corresponding to the selections given.
         # In the case that no layers= option was passed then this will
         # create the layers= option corresponding to all layers being selected.
-        repo_line=`build_repo_line`
+        repo_line=$(build_repo_line)
 
         # Save the line in the output variable for if we create an output file
-        output="$output""$repo_line\n"
+        output="${output}${repo_line}\n"
 
         save_layers
 
-    done < $inputfile
+    done < "$inputfile"
 }
 
 
 configure_repo() {
-    if [ "x$name" = "x" ]
+    if [ -z "$name" ]
     then
         get_repo_name
     fi
 
     # Check if the repo with $name was already seen.  Use the , at the end
     # of the grep to avoid matching similar named repos.
-    temp=`printf '%s\n' $output | grep -e "^$name,"`
+    temp=$(printf '%s\n' "$output" | grep -e "^$name,")
 
-    if [ "x$temp" != "x" ]
+    if [ -n "$temp" ]
     then
-        echo "This repository ($name) has already been configured with the following values:"
-        printf '\t%s\n' $temp
-        echo "Skipping configuring duplicate repository"
+        printf '%s\n' "This repository ($name) has already been configured with the following values:"
+        printf '\t%s\n' "$temp"
+        printf '%s\n' "Skipping configuring duplicate repository"
         return 1
     fi
   
-    if [ "x$uri" = "x" ]
+    if [ -z "$uri" ]
     then
         get_repo_uri
     fi
 
-    echo ""
-    echo ""
-    echo "cloning repo $name"
-    echo ""
+    printf '%s\n' "" \
+                  "" \
+                  "cloning repo $name" \
+                  "" ;
 
     clone_repo
 
-    if [ "x$branch" = "x" ]
+    if [ -z "$branch" ]
     then
         get_repo_branch
     fi
 
     checkout_branch
 
-    if [ "x$commit" = "x" ]
+    if [ -z "$commit" ]
     then
         get_repo_commit
     fi
 
     checkout_commit
 
-    if [ "x$repo_layers" = "xall" ]
+    if [ "$repo_layers" = "all" ]
     then
         # Call select layers with the all option to select all layers
         select_layers "all"
-    elif [ "x$repo_layers" = "x" ]
+    elif [ -z "$repo_layers" ]
     then
         select_layers
-    elif [ "x$repo_layers" = "xnone" ]
+    elif [ "$repo_layers" = "none" ]
     then
         # Call select layers with the none option to not select any layers
         select_layers "none"
@@ -371,15 +394,13 @@ configure_repo() {
 clone_repo() {
     # check if the repo already exists.  if so then fetch the latest updates,
     # else clone it
-    if [ -d $sourcedir/$name ]
+    if cd "$sourcedir/$name" 2> /dev/null
     then
-        cd $sourcedir/$name
-        $scriptdir/git_retry.sh fetch --all
+        "$scriptdir/git_retry.sh" fetch --all
     else
-        $scriptdir/git_retry.sh clone $uri $sourcedir/$name
-        if [ "$?" != "0" ]
+        if ! "$scriptdir/git_retry.sh" clone "$uri" "$sourcedir/$name"
         then
-            echo "ERROR: Could not clone repository at $uri"
+            printf '%s\n' "ERROR: Could not clone repository at $uri"
             exit 1
         fi
     fi
@@ -391,16 +412,16 @@ get_repo_branch() {
 
     while [ "$found" = "0" ]
     do
-        cd $sourcedir/$name
+        cd "$sourcedir/$name" || return 1
 
         # Get a unique list of branches for the user to chose from
         # Also delete the origin/HEAD line that the -r option returns
-        t_branches=`git branch -r | sed '/origin\/HEAD/d'`
+        t_branches=$(git branch -r | sed '/origin\/HEAD/d')
         for b in $t_branches
         do
-            branches="$branches"`echo $b | sed 's:.*origin/::g'`"\n"
+            branches="${branches}$(printf '%s\n' "$b" | sed 's:.*origin/::g')\n"
         done
-        branches=`printf "$branches\n" | sort | uniq`
+        branches=$(printf '%s\n' "$branches" | sort | uniq)
 
 cat << EOM
 
@@ -412,7 +433,7 @@ $branches
 
 What branch would you like to checkout for the $name repository? 
 EOM
-        read input
+        read -r input
 
         # check that the branch is in the list of branches
         # NOTE: using a for loop here because I want exact matches.
@@ -427,42 +448,41 @@ EOM
 
         if [ "$found" != "1" ]
         then
-            echo "Invalid branch ($input) selected.  Please try again"
+            printf '%s\n' "Invalid branch ($input) selected.  Please try again"
         fi
     done
     branch=$input
 }
 
 checkout_branch() {
-    cd $sourcedir/$name
+    cd "$sourcedir/$name" || return 1
 
     # Check if a local branch already exists to track the remote branch.
     # If not then create a tracking branch and checkout the branch
     # else just checkout the existing branch
-    git branch | grep $branch > /dev/null
-    if [ "$?" != "0" ]
+    if git branch | grep -q "$branch"
     then
-        git checkout origin/$branch -b $branch --track
+        git checkout "origin/$branch" -b "$branch" --track
     else
-        git checkout $branch
+        git checkout "$branch"
     fi
 
     # Now that we are on the proper branch pull the remote branch changes if
     # any.  In the case of a clean checkout this should be already up to date,
     # but for an existing checkout this should be the changes that were
     # fetched earlier.
-    if [ "x$resethead" = "xy" ]
+    if [ "$resethead" = "y" ]
     then
         # Instead of merging, reset to remote branch to avoid conflicts due to rebase
-        git reset --hard origin/$branch
+        git reset --hard "origin/$branch"
     else
-        git merge origin/$branch
+        git merge "origin/$branch"
     fi
 }
 
 checkout_commit() {
-    cd $sourcedir/$name
-    if [ "x$commit" != "xHEAD" ]
+    cd "$sourcedir/$name" || return 1
+    if [ "$commit" != "HEAD" ]
     then
         git checkout $commit
     fi
@@ -470,7 +490,7 @@ checkout_commit() {
 
 get_repo_commit() {
   # prompt for what commit to use with HEAD as default
-    cd $sourcedir/$name
+    cd "$sourcedir/$name" || return 1
 cat << EOM
 
 
@@ -478,15 +498,15 @@ cat << EOM
 The $name repository has the following tags available:
 
 EOM
-    tags=`git tag`
-    if [ "x$tags" = "x" ]
+    tags=$(git tag)
+    if [ -z "$tags" ]
     then
-        printf "\tNo tags found\n"
+        printf '\t%s\n' "No tags found"
     else
         # Format the tags nicely
         for t in $tags
         do
-            printf "\t* $t\n"
+            printf '\t%s\n' "* $t"
         done
     fi
 cat << EOM
@@ -495,22 +515,22 @@ You can either select one of these tags or specify your own commit SHA sum, or
 press ENTER to use the HEAD of the current branch.
 EOM
 
-    read input
+    read -r input
 
-    if [ "x$input" = "x" ]
+    if [ -z "$input" ]
     then
         commit="HEAD"
     fi
 }
 
 verify_layers() {
-    cd $sourcedir
+    cd "$sourcedir" || return 1
     for l in $repo_layers
     do
-        if [ ! -f $sourcedir/$l/conf/layer.conf ]
+        if [ ! -f "$sourcedir/$l/conf/layer.conf" ]
         then
-            echo "ERROR: the $l layer in the $name repository could not be"
-            echo "       found.  Bailing out."
+            printf '%s\n' "ERROR: the $l layer in the $name repository could not be" \
+                          "       found.  Bailing out." ;
             exit 1
         fi
     done
@@ -521,7 +541,7 @@ save_layers() {
     # Add the repo layers to the layers list
     for l in $repo_layers
     do
-        layers="$layers""$sourcedir/$l "
+        layers="${layers}${sourcedir}/$l "
     done
 }
 
@@ -536,15 +556,15 @@ select_layers() {
     #If so prompt for which layers to configure
     #If there is only one then just configure that layer and don't prompt
 
-    if [ "x$arg1" = "xnone" ]
+    if [ "$arg1" = "none" ]
     then
         repo_layers=""
         return
     fi
 
-    cd $sourcedir
+    cd "$sourcedir" || return 1
     # Get a count of how many layers there are
-    count=`find $name -name "layer.conf" | grep -c layer.conf`
+    count=$(find "$name" -name "layer.conf" | grep -c layer.conf)
 
     case $count in
         0 )
@@ -559,11 +579,11 @@ select_layers() {
             ;;
     esac
 
-    t_layers=`find $name -name "layer.conf" | sed 's:\/conf\/layer.conf::'`
+    t_layers=$(find "$name" -name "layer.conf" | sed 's:\/conf\/layer.conf::')
 
-    if [ "x$arg1" != "xall" ]
+    if [ "$arg1" != "all" ]
     then
-        echo "arg1 = $arg1"
+        printf '%s\n' "arg1 = $arg1"
         # Prompt for which layers to configure
 cat << EOM
 
@@ -575,7 +595,7 @@ EOM
 
     for l in $t_layers
     do
-        printf "\t"`echo $l | sed "s:${name}\/::"`"\n"
+        printf '\t%s\n' "$(printf '%s\n' "$l" | sed "s:${name}\/::")"
     done
 
 cat << EOM
@@ -584,10 +604,10 @@ Please provide the list of layers you wish to use as a space separated list,
 or press enter to use all of the layers.
 EOM
 
-        read input
+        read -r input
     fi
 
-    if [ "x$input" = "x" ]
+    if [ -z "$input" ]
     then
         repo_layers=$t_layers
     else
@@ -603,7 +623,7 @@ cat << EOM
 What is the name of the repository you want to configure?
 EOM
 
-    read name
+    read -r name
 }
 
 
@@ -615,26 +635,26 @@ cat << EOM
 What is the git clone uri of the $name repository?
 EOM
 
-    read uri
+    read -r uri
 }
 
 
 get_oecorelayerconf() {
     # Check if the variable is already set.
-    if [ "x$OECORELAYERCONF" != "x" ]
+    if [ -n "$OECORELAYERCONF" ]
     then
         OECORELAYERCONFPATH=$scriptdir/$OECORELAYERCONF
 
-        if [ ! -e $OECORELAYERCONFPATH ]
+        if [ ! -e "$OECORELAYERCONFPATH" ]
         then
-            echo "ERROR: Could not find the specified layer conf file $OECORELAYERCONFPATH"
+            printf '%s\n' "ERROR: Could not find the specified layer conf file $OECORELAYERCONFPATH"
         fi
 
         return
     fi
 
-    cd $sourcedir
-    confs=`find . -name "bblayers.conf.sample"`
+    cd "$sourcedir" || return 1
+    confs=$(find . -name "bblayers.conf.sample")
 
     done="n"
 
@@ -651,7 +671,7 @@ EOM
 
         for f in $confs
         do
-            printf "\t$f\n"
+            printf '\t%s\n' "$f"
         done
 
 cat << EOM
@@ -659,15 +679,15 @@ Please select one of the above sample files to use as a template for
 configuring your build environment.
 EOM
 
-        read input
+        read -r input
 
-        if [ -e $input ]
+        if [ -e "$input" ]
         then
             done="y"
             OECORELAYERCONF=$input
             OECORELAYERCONFPATH=$sourcedir/$OECORELAYERCONF
         else
-            echo "ERROR: Could not find the specified layer conf file $input"
+            printf '%s\n' "ERROR: Could not find the specified layer conf file $input"
         fi
     done
 }
@@ -675,21 +695,21 @@ EOM
 
 get_oecorelocalconf() {
     # Check if the variable is already set.
-    if [ "x$OECORELOCALCONF" != "x" ]
+    if [ -n "$OECORELOCALCONF" ]
     then
         OECORELOCALCONFPATH=$scriptdir/$OECORELOCALCONF
 
-        if [ ! -e $OECORELOCALCONFPATH ]
+        if [ ! -e "$OECORELOCALCONFPATH" ]
         then
-            echo "ERROR: Could not find the specified local conf file $OECORELOCALCONFPATH"
+            printf '%s\n' "ERROR: Could not find the specified local conf file $OECORELOCALCONFPATH"
             exit 1
         fi
 
         return
     fi
 
-    cd $sourcedir
-    confs=`find . -name "local.conf.sample"`
+    cd "$sourcedir" || return 1
+    confs=$(find . -name "local.conf.sample")
 
     done="n"
 
@@ -706,7 +726,7 @@ EOM
 
         for f in $confs
         do
-            printf "\t$f\n"
+            printf '\t%s\n' "$f"
         done
 
 cat << EOM
@@ -714,15 +734,15 @@ Please select one of the above sample files to use as a template for
 configuring your build environment.
 EOM
 
-        read input
+        read -r input
 
-        if [ -e $input ]
+        if [ -e "$input" ]
         then
             done="y"
             OECORELOCALCONF=$input
             OECORELOCALCONFPATH=$sourcedir/$OECORELOCALCONF
         else
-            echo "ERROR: Could not find the inputted sample file: $input"
+            printf '%s\n' "ERROR: Could not find the inputted sample file: $input"
             exit 1
         fi
     done
@@ -745,19 +765,19 @@ NOTE: Any additional entries to this file will be lost if the $0
 
 EOM
     # First copy the template file
-    cp -f $OECORELAYERCONFPATH $confdir/bblayers.conf
+    cp -f "$OECORELAYERCONFPATH" "$confdir/bblayers.conf"
 
     # Now add the layers we have configured to the BBLAYERS variable
-cat >> $confdir/bblayers.conf << EOM
+cat >> "$confdir/bblayers.conf" << EOM
 
 # Layers configured by oe-core-setup script
 BBLAYERS += " \\
 EOM
     for l in $layers
     do
-        printf "\t$l \\%b" "\n" >> $confdir/bblayers.conf
+        printf '\t%s \\\n' "$l" >> "$confdir/bblayers.conf"
     done
-    echo "\"" >> $confdir/bblayers.conf
+    printf '%s\n' "\"" >> "$confdir/bblayers.conf"
 }
 
 
@@ -777,73 +797,84 @@ NOTE: You will probably want to change the default MACHINE setting in the
       local.conf file to the machine you are trying to build.
 
 EOM
-    
-    if [ -e $confdir/local.conf ]
+
+    if [ -e "$confdir/local.conf" ]
     then
-        echo "WARNING: Found existing $confdir/local.conf"
-        echo "Saving a backup to $confdir/local.conf.bak" 
-        cp -f $confdir/local.conf $confdir/local.conf.bak
+        printf '%s\n' "WARNING: Found existing $confdir/local.conf" \
+                      "Saving a backup to $confdir/local.conf.bak";
+        cp -f "$confdir/local.conf" "$confdir/local.conf.bak"
     fi
 
     # First copy the template file
-    cp -f $OECORELOCALCONFPATH $confdir/local.conf
+    cp -f "$OECORELOCALCONFPATH" "$confdir/local.conf"
 
     # Find if old DL_DIR was set
-    if [ -e $confdir/local.conf.bak ]
+    if [ -e "$confdir/local.conf.bak" ]
     then
-        old_dldir=`cat $confdir/local.conf.bak | grep -e "^DL_DIR =" | sed 's|DL_DIR = ||' | sed 's/"//g'`
+        old_dldir=$(grep -e "^DL_DIR =" "$confdir/local.conf.bak" | sed 's|DL_DIR = ||' | sed 's/"//g')
     else
         old_dldir="$oebase/downloads"
     fi
 
     # If command line option was not set use the old dldir
-    if [ "x$dldir" = "x" ]
+    if [ -z "$dldir" ]
     then
         dldir=$old_dldir
     fi
 
-    sed -i "s|^DL_DIR.*|DL_DIR = \"${dldir}\"|" $confdir/local.conf
+    sed -i "s|^DL_DIR.*|DL_DIR = \"${dldir}\"|" "$confdir/local.conf"
 
-    if [ -e $oebase/tmp_append_local.conf ]
+    if [ -e "$oebase/tmp_append_local.conf" ]
     then
-        echo "" >> $confdir/local.conf
-        echo "#====================================================================" >> $confdir/local.conf
-        echo "# LOCALCONF: settings from config file:" >> $confdir/local.conf
-        echo "#   $inputfile" >> $confdir/local.conf
-        echo "#" >> $confdir/local.conf
-        echo "# Do not remove." >> $confdir/local.conf
-        echo "#--------------------------------------------------------------------" >> $confdir/local.conf
-        cat $oebase/tmp_append_local.conf >> $confdir/local.conf
-        echo "#====================================================================" >> $confdir/local.conf
-        echo "" >>  $confdir/local.conf
-        rm $oebase/tmp_append_local.conf
+        {
+            printf '%s\n' "" \
+                          "#====================================================================" \
+                          "# LOCALCONF: settings from config file:" \
+                          "#   $inputfile" \
+                          "#" \
+                          "# Do not remove." \
+                          "#--------------------------------------------------------------------" ;
+            cat "$oebase/tmp_append_local.conf";
+            printf '%s\n' "#====================================================================" \
+                          "" ;
+        } >> "$confdir/local.conf"
+        rm "$oebase/tmp_append_local.conf"
+    fi
+}
+
+print_motd() {
+
+    if [ -e "$oebase/tmp_motd" ]
+    then
+        printf '%s\n' ""
+        cat "$oebase/tmp_motd"
+        printf '%s\n' ""
     fi
 }
 
 print_image_names() {
     SOURCES="${1}"
-    FOLDERS=`find "${SOURCES}" -type d -a -iname images|grep recipes-core|sed -e "s/.*sources\///g"|cut -d '/' -f1|sort -u -r`
-    IMAGES=""
+    FOLDERS=$(find "${SOURCES}" -type d -a -iname images|grep recipes-core|sed -e "s/.*sources\///g"|cut -d '/' -f1|sort -u -r)
     for FOLDER in ${FOLDERS}
     do
         RECO=""
         if [ "${FOLDER}" = "meta-arago" ]; then
             RECO="[recommended]"
         fi
-        echo "From ${FOLDER}${RECO}:"
-        F_IMAGE_FOLDERS=`find "${SOURCES}/${FOLDER}" -type d -a -iname images|grep recipes-core`
+        printf '%s\n' "From ${FOLDER}${RECO}:"
+        F_IMAGE_FOLDERS=$(find "${SOURCES}/${FOLDER}" -type d -a -iname images|grep recipes-core)
         for IMG_FOLDER in ${F_IMAGE_FOLDERS}
         do
-            F_IMAGES=`find "${IMG_FOLDER}" -iname *.bb`
+            F_IMAGES=$(find "${IMG_FOLDER}" -iname '*.bb')
             if [ -n "${F_IMAGES}" ]; then
                 for img in ${F_IMAGES}
                 do
-                    name=`basename "${img}"|sed 's/\.bb$//g'`
-                    summary=`grep SUMMARY "${img}"|cut -d '=' -f2| sed 's/["/]//g'|xargs  echo`
+                    name=$(basename "${img}"|sed 's/\.bb$//g')
+                    summary=$(grep SUMMARY "${img}"|cut -d '=' -f2| sed 's/["/]//g')
                     if [ -z "${summary}" ]; then
                         summary="No Summary available"
                     fi
-                    echo "    ${name}: ${summary}"
+                    printf '%s\n' "    ${name}: ${summary}"
                 done
             fi
         done
@@ -869,17 +900,17 @@ For example:
 
 Common targets are:
 EOM
-print_image_names ${sourcedir}
+print_image_names "${sourcedir}"
 
 
     # Write the setenv file
-cat > $confdir/setenv << EOM
+cat > "$confdir/setenv" << EOM
 # Set OEBASE to where the build and source directories reside
 # NOTE: Do NOT place a trailing / on the end of OEBASE.
-export OEBASE=${oebase}
+export OEBASE="${oebase}"
 
 # try to find out bitbake directory
-BITBAKEDIR=\`find \${OEBASE}/sources -name "*bitbake*"\`
+BITBAKEDIR=\$(find "\${OEBASE}/sources" -name "*bitbake*")
 for f in \${BITBAKEDIR}
 do
     if [ -d \${f}/bin ]
@@ -890,7 +921,7 @@ done
 
 # check for any scripts directories in the top-level of the repos and add those
 # to the PATH
-SCRIPTS=\`find \${OEBASE}/sources -maxdepth 2 -name "scripts" -type d\`
+SCRIPTS=\$(find "\${OEBASE}/sources" -maxdepth 2 -name "scripts" -type d)
 for s in \${SCRIPTS}
 do
     PATH="\${s}:\$PATH"
@@ -899,13 +930,13 @@ done
 unset BITBAKEDIR
 unset SCRIPTS
 export PATH
-export BUILDDIR=${builddir}
+export BUILDDIR="${builddir}"
 EOM
 
     if [ "$BITBAKE_INCLUSIVE_VARS" = "no" ]; then
-        echo "export BB_ENV_EXTRAWHITE=\"MACHINE DISTRO TCMODE TCLIBC http_proxy ftp_proxy https_proxy all_proxy ALL_PROXY no_proxy SSH_AGENT_PID SSH_AUTH_SOCK BB_SRCREV_POLICY SDKMACHINE BB_NUMBER_THREADS PARALLEL_MAKE GIT_PROXY_COMMAND GIT_PROXY_IGNORE SOCKS5_PASSWD SOCKS5_USER OEBASE META_SDK_PATH TOOLCHAIN_TYPE TOOLCHAIN_BRAND TOOLCHAIN_BASE TOOLCHAIN_PATH TOOLCHAIN_PATH_ARMV5 TOOLCHAIN_PATH_ARMV7 TOOLCHAIN_PATH_ARMV8 EXTRA_TISDK_FILES TISDK_VERSION ARAGO_BRAND ARAGO_RT_ENABLE ARAGO_SYSTEST_ENABLE ARAGO_KERNEL_SUFFIX TI_SECURE_DEV_PKG_CAT TI_SECURE_DEV_PKG_AUTO TI_SECURE_DEV_PKG_K3 ARAGO_SYSVINIT SYSFW_FILE\"" >> $confdir/setenv
+        printf 'export %s="%s"\n' 'BB_ENV_EXTRAWHITE' 'MACHINE DISTRO TCMODE TCLIBC http_proxy ftp_proxy https_proxy all_proxy ALL_PROXY no_proxy SSH_AGENT_PID SSH_AUTH_SOCK BB_SRCREV_POLICY SDKMACHINE BB_NUMBER_THREADS PARALLEL_MAKE GIT_PROXY_COMMAND GIT_PROXY_IGNORE SOCKS5_PASSWD SOCKS5_USER OEBASE META_SDK_PATH TOOLCHAIN_TYPE TOOLCHAIN_BRAND TOOLCHAIN_BASE TOOLCHAIN_PATH TOOLCHAIN_PATH_ARMV5 TOOLCHAIN_PATH_ARMV7 TOOLCHAIN_PATH_ARMV8 EXTRA_TISDK_FILES TISDK_VERSION ARAGO_BRAND ARAGO_RT_ENABLE ARAGO_SYSTEST_ENABLE ARAGO_KERNEL_SUFFIX TI_SECURE_DEV_PKG_CAT TI_SECURE_DEV_PKG_AUTO TI_SECURE_DEV_PKG_K3 ARAGO_SYSVINIT SYSFW_FILE' >> "$confdir/setenv"
     else
-        echo "export BB_ENV_PASSTHROUGH_ADDITIONS=\"MACHINE DISTRO TCMODE TCLIBC http_proxy ftp_proxy https_proxy all_proxy ALL_PROXY no_proxy SSH_AGENT_PID SSH_AUTH_SOCK BB_SRCREV_POLICY SDKMACHINE BB_NUMBER_THREADS PARALLEL_MAKE GIT_PROXY_COMMAND GIT_PROXY_IGNORE SOCKS5_PASSWD SOCKS5_USER OEBASE META_SDK_PATH TOOLCHAIN_TYPE TOOLCHAIN_BRAND TOOLCHAIN_BASE TOOLCHAIN_PATH TOOLCHAIN_PATH_ARMV5 TOOLCHAIN_PATH_ARMV7 TOOLCHAIN_PATH_ARMV8 EXTRA_TISDK_FILES TISDK_VERSION ARAGO_BRAND ARAGO_RT_ENABLE ARAGO_SYSTEST_ENABLE ARAGO_KERNEL_SUFFIX TI_SECURE_DEV_PKG_CAT TI_SECURE_DEV_PKG_AUTO TI_SECURE_DEV_PKG_K3 ARAGO_SYSVINIT SYSFW_FILE\"" >> $confdir/setenv
+        printf 'export %s="%s"\n' 'BB_ENV_PASSTHROUGH_ADDITIONS' 'MACHINE DISTRO TCMODE TCLIBC http_proxy ftp_proxy https_proxy all_proxy ALL_PROXY no_proxy SSH_AGENT_PID SSH_AUTH_SOCK BB_SRCREV_POLICY SDKMACHINE BB_NUMBER_THREADS PARALLEL_MAKE GIT_PROXY_COMMAND GIT_PROXY_IGNORE SOCKS5_PASSWD SOCKS5_USER OEBASE META_SDK_PATH TOOLCHAIN_TYPE TOOLCHAIN_BRAND TOOLCHAIN_BASE TOOLCHAIN_PATH TOOLCHAIN_PATH_ARMV5 TOOLCHAIN_PATH_ARMV7 TOOLCHAIN_PATH_ARMV8 EXTRA_TISDK_FILES TISDK_VERSION ARAGO_BRAND ARAGO_RT_ENABLE ARAGO_SYSTEST_ENABLE ARAGO_KERNEL_SUFFIX TI_SECURE_DEV_PKG_CAT TI_SECURE_DEV_PKG_AUTO TI_SECURE_DEV_PKG_K3 ARAGO_SYSVINIT SYSFW_FILE' >> "$confdir/setenv"
     fi
 }
 
@@ -913,15 +944,15 @@ EOM
 build_repo_line() {
     # clean up the layers to remove the repository name and add : divider
     temp_layers=""
-    for l in `echo $repo_layers | sed "s:${name}::" | sed -e 's:^\/::'`
+    for l in $(printf '%s\n' "$repo_layers" | sed "s:${name}::" | sed -e 's:^\/::')
     do
-        temp_layers="$temp_layers""`echo $l | sed "s:${name}\/::"`:"
+        temp_layers="${temp_layers}$(printf '%s\n' "$l" | sed "s:${name}\/::"):"
     done
 
     # Lastly clean off any trailing :
-    temp_layers=`echo $temp_layers | sed 's/:$//'`
+    temp_layers=$(printf '%s\n' "$temp_layers" | sed 's/:$//')
 
-    echo "$name,$uri,$branch,$commit,layers=$temp_layers"
+    printf '%s\n' "$name,$uri,$branch,$commit,layers=$temp_layers"
 }
 
 ###############
@@ -938,18 +969,26 @@ do
         o ) outputfile="$OPTARG";;
         d ) dldir="$OPTARG";;
         b ) oebase="$OPTARG";;
-        h ) usage;;
+        * ) usage;;
     esac
 done
 
+# add early sanity check
+if printf '%s\n' "$oebase" | grep -q '\s'
+then
+   printf '%s\n' "OE-Base path has whitespace characters in it's path!" \
+                 "This is currently unsupported." ;
+   exit 1
+fi
+
 # create passed in directory if it doesn't exist
-mkdir -p $oebase
+mkdir -p "$oebase"
 
 # retrive the absolute path to the oebase directory incase
 # a relative path is passed in
-cd $oebase
-oebase=`pwd`
-cd -
+cd "$oebase" || exit 1
+oebase=$(pwd)
+cd - || exit 1
 
 # Populate the following variables depending on the value of oebase
 sourcedir="$oebase/sources"
@@ -958,15 +997,17 @@ confdir="$builddir/conf"
 
 check_input
 
-if [ "x$inputfile" != "x" ]
+if [ -n "$inputfile" ]
 then
     parse_input_file
+
+    print_motd
 fi
 
-if [ "x$interactive" = "xy" ]
+if [ "$interactive" = "y" ]
 then
     cont="y"
-    while [ "x$cont" = "xy" -o "x$cont" = "xY" ]
+    while [ "$cont" = "y" ] || [ "$cont" = "Y" ]
     do
         # clean up the variables for each repo
         name=""
@@ -975,9 +1016,7 @@ then
         commit=""
         repo_layers=""
 
-        configure_repo
-
-        if [ "$?" != "0" ]
+        if ! configure_repo
         then
             continue
         fi
@@ -985,17 +1024,17 @@ then
         # Create the repository line corresponding to the selections given.
         # In the case that no layers= option was passed then this will
         # create the layers= option corresponding to all layers being selected.
-        repo_line=`build_repo_line`
+        repo_line=$(build_repo_line)
 
         # Save the line in the output variable for if we create an output file
-        output="$output""$repo_line\n"
+        output="${output}${repo_line}\n"
 
         save_layers
 
-        echo ""
-        echo ""
-        echo "Would you like to configure another repository? [y/n] "
-        read cont
+        printf '%s\n' "" \
+                      "" ;
+        printf '%s' "Would you like to configure another repository? [y/n] "
+        read -r cont
     done
 fi
 
@@ -1005,17 +1044,19 @@ config_oecorelayerconf
 get_oecorelocalconf
 config_oecorelocalconf
 
-if [ "x$outputfile" != "x" ]
+if [ -n "$outputfile" ]
 then
     # make sure that the directory for the output file exists
-    cd $oebase
-    dir=`dirname $outputfile`
-    if [ ! -d $dir ]
+    cd "$oebase" || exit 1
+    dir=$(dirname "$outputfile")
+    if [ ! -d "$dir" ]
     then
-        mkdir -p $dir
+        mkdir -p "$dir"
     fi
-    printf '%s\n' $output > $outputfile
-    echo "Output file is $outputfile"
+    printf '%s\n' "$output" > "$outputfile"
+    printf '%s\n' "Output file is $outputfile"
 fi
 
 create_setenv_file
+
+print_motd
