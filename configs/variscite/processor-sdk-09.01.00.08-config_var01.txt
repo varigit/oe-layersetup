@@ -16,6 +16,7 @@ meta-variscite-bsp-common,git@github.com:varigit/meta-variscite-bsp-common,kirks
 meta-variscite-bsp-ti,git@github.com:varigit/meta-variscite-bsp-ti,kirkstone-var01,5222b05d75b705c73918e73d2c4ba19c45fe6037,layers=
 meta-variscite-sdk-common,git@github.com:varigit/meta-variscite-sdk-common,kirkstone-var01,a81db9546cc38b4e8477d47c4e9b6b2a7d07f4d2,layers=
 meta-variscite-sdk-ti,git@github.com:varigit/meta-variscite-sdk-ti,kirkstone-var01,a0854540d9041408c695499870badc15c111850b,layers=
+meta-swupdate,https://github.com/sbabic/meta-swupdate.git,kirkstone,3d12b2788a45d86efcb1ad3e01f209558c54795c,layers=
 OECORELAYERCONF=./sample-files/bblayers.conf.sample
 meta-edgeai,https://git.ti.com/git/edgeai/meta-edgeai.git,kirkstone,87d730d9c1778c7f892b096878f338f36d6877f4,layers=
 OECORELOCALCONF=./sample-files/local-arago64-v2.conf.sample
