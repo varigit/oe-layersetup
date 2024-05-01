@@ -13,7 +13,7 @@ meta-arm,https://git.yoctoproject.org/meta-arm,kirkstone,b187fb9232ca0a6b5f8f90b
 #meta-clang,https://github.com/kraj/meta-clang,kirkstone,59408ccade8843ea051319b6dfb356cc01368063,layers=
 oe-core,https://git.openembedded.org/openembedded-core,kirkstone,11da43b58e19583a9bc16044309610cfb2e86469,layers=meta
 meta-variscite-bsp-common,https://github.com/varigit/meta-variscite-bsp-common.git,kirkstone-var01,0e8dff45ada454a58bf07f5a3a9b92e8e7403ca3,layers=
-meta-variscite-bsp-ti,https://github.com/varigit/meta-variscite-bsp-ti.git,kirkstone-var01,5222b05d75b705c73918e73d2c4ba19c45fe6037,layers=
+meta-variscite-bsp-ti,https://github.com/varigit/meta-variscite-bsp-ti.git,kirkstone-var01,d66ff8d8a86fccb4809f3aa8f0ff243e0964b1b6,layers=
 meta-variscite-sdk-common,https://github.com/varigit/meta-variscite-sdk-common.git,kirkstone-var01,a81db9546cc38b4e8477d47c4e9b6b2a7d07f4d2,layers=
 meta-variscite-sdk-ti,https://github.com/varigit/meta-variscite-sdk-ti.git,kirkstone-var01,a0854540d9041408c695499870badc15c111850b,layers=
 meta-swupdate,https://github.com/sbabic/meta-swupdate.git,kirkstone,3d12b2788a45d86efcb1ad3e01f209558c54795c,layers=
