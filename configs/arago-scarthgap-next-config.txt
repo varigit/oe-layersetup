@@ -23,6 +23,7 @@ OECORELAYERCONF=./sample-files/bblayers.conf.sample
 OECORELOCALCONF=./sample-files/local-arago64-v2.conf.sample
 BITBAKE_INCLUSIVE_VARS=yes
 
+LOCALCONF:BRANCH:pn-ltp-ddt = "cicd"
 LOCALCONF:BRANCH:pn-linux-ti-staging = "ti-linux-6.6.y-cicd"
 LOCALCONF:BRANCH:pn-linux-ti-staging-rt = "ti-rt-linux-6.6.y-cicd"
 LOCALCONF:BRANCH:pn-linux-ti-staging-systest = "ti-linux-6.6.y-cicd"
