@@ -23,7 +23,6 @@ OECORELAYERCONF=./sample-files/bblayers.conf.sample
 OECORELOCALCONF=./sample-files/local-arago64-v2.conf.sample
 BITBAKE_INCLUSIVE_VARS=yes
 
-LOCALCONF:BRANCH:pn-ltp-ddt = "cicd"
 LOCALCONF:BRANCH:pn-cadence-mhdp-fw = "ti-linux-firmware-next"
 LOCALCONF:BRANCH:pn-cnm-wave-fw = "ti-linux-firmware-next"
 LOCALCONF:BRANCH:pn-goodix-fw = "ti-linux-firmware-next"
