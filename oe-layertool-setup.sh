@@ -1059,4 +1059,7 @@ fi
 
 create_setenv_file
 
+# Fix do_fetch() failure with .zst archives
+sed -i "s/\['.gz', '.bz2', '.Z', '.xz', '.lz'\]/\['.gz', '.bz2', '.Z', '.xz', '.lz', '.zst'\]/g" $scriptdir/sources/bitbake/lib/bb/fetch2/__init__.py
+
 print_motd
