@@ -15,7 +15,7 @@ oe-core,https://git.openembedded.org/openembedded-core,kirkstone,8a502301209ef14
 meta-variscite-bsp-common,https://github.com/varigit/meta-variscite-bsp-common.git,kirkstone-var01,0e8dff45ada454a58bf07f5a3a9b92e8e7403ca3,layers=
 meta-variscite-bsp-ti,https://github.com/varigit/meta-variscite-bsp-ti.git,kirkstone_09.02.01.10_var01,c0810a24a902d7f1c0c2122570f9ef2bdaa38160,layers=
 meta-variscite-sdk-common,https://github.com/varigit/meta-variscite-sdk-common.git,kirkstone-var01,0f4175ab57ea8b7f659e58829bf97278ad67451f,layers=
-meta-variscite-sdk-ti,https://github.com/varigit/meta-variscite-sdk-ti.git,kirkstone-var01,ab984c96d19358a160dd61ad43b587a8731e9833,layers=
+meta-variscite-sdk-ti,https://github.com/varigit/meta-variscite-sdk-ti.git,kirkstone_09.02.01.10_var01,8cd11cc5e67261204f4c372c4a6b10e69dd69b21,layers=
 meta-swupdate,https://github.com/sbabic/meta-swupdate.git,kirkstone,6918be849ddf1fed5b7a0173e51c7a136e8d4101,layers=
 OECORELAYERCONF=./sample-files/bblayers.conf.sample
 meta-edgeai,https://git.ti.com/git/edgeai/meta-edgeai.git,kirkstone,fdb683aa69d4d70aca17c2d53be3f900ae9d5e72,layers=
