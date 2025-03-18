@@ -14,9 +14,9 @@ meta-clang,https://github.com/kraj/meta-clang,scarthgap,9fbfa9db33131abdf3870a94
 oe-core,https://git.openembedded.org/openembedded-core,scarthgap,dac630ab5ee7aa6c5c7c294093adbd11b116c765,layers=meta
 meta-edgeai,https://git.ti.com/git/edgeai/meta-edgeai.git,scarthgap,10.01.10.04,layers=
 meta-variscite-bsp-common,https://github.com/varigit/meta-variscite-bsp-common.git,scarthgap_6.6.52-2.2.0_var01,b8025d86014142c4a0e4239494c68090f65c8df4,layers=
-meta-variscite-bsp-ti,https://github.com/varigit/meta-variscite-bsp-ti.git,kirkstone_09.02.01.10_var01,11470a1ba439d8d065eeb41d3844e52474fb592b,layers=
+meta-variscite-bsp-ti,https://github.com/FrancescoFerraro/meta-variscite-bsp-ti.git,dev_scarthgap_10.01.10.04_var01_RND-2750_am62p,de1c8112f2d0fda1cb2fde7b33726cc0a8b0e757,layers=
 meta-variscite-sdk-common,https://github.com/varigit/meta-variscite-sdk-common.git,scarthgap_6.6.52-2.2.0_var01,ba2b5ae9dfc80a037c9ab7360010b74334d766f8,layers=
-meta-variscite-sdk-ti,https://github.com/varigit/meta-variscite-sdk-ti.git,kirkstone_09.02.01.10_var01,9e28380534f44caede2db87e5b8ab668b2a46c9c,layers=
+meta-variscite-sdk-ti,https://github.com/FrancescoFerraro/meta-variscite-sdk-ti.git,dev_scarthgap_10.01.10.04_var01_RND-2750_am62p,c4d668996ce7067622758b6c7e9fb0d159198668,layers=
 meta-swupdate,https://github.com/sbabic/meta-swupdate.git,scarthgap,d598d4e675b541301ea1dfc8f0c8931983b4dcd0,layers=
 OECORELAYERCONF=./sample-files/bblayers.conf.sample
 OECORELOCALCONF=./sample-files/local-arago64-v2.conf.sample
