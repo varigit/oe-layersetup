@@ -13,10 +13,10 @@ meta-arm,https://git.yoctoproject.org/meta-arm,scarthgap,7088279c0ab00c7dabefdd4
 meta-clang,https://github.com/kraj/meta-clang,scarthgap,9fbfa9db33131abdf3870a94f00199eb53e276e5,layers=
 oe-core,https://git.openembedded.org/openembedded-core,scarthgap,dac630ab5ee7aa6c5c7c294093adbd11b116c765,layers=meta
 meta-edgeai,https://git.ti.com/git/edgeai/meta-edgeai.git,scarthgap,10.01.10.04,layers=
-meta-variscite-bsp-common,https://github.com/varigit/meta-variscite-bsp-common.git,scarthgap_6.6.52-2.2.0_var01,b8025d86014142c4a0e4239494c68090f65c8df4,layers=
-meta-variscite-bsp-ti,https://github.com/FrancescoFerraro/meta-variscite-bsp-ti.git,dev_scarthgap_10.01.10.04_var01_RND-2750_am62p,de1c8112f2d0fda1cb2fde7b33726cc0a8b0e757,layers=
-meta-variscite-sdk-common,https://github.com/varigit/meta-variscite-sdk-common.git,scarthgap_6.6.52-2.2.0_var01,ba2b5ae9dfc80a037c9ab7360010b74334d766f8,layers=
-meta-variscite-sdk-ti,https://github.com/FrancescoFerraro/meta-variscite-sdk-ti.git,dev_scarthgap_10.01.10.04_var01_RND-2750_am62p,c4d668996ce7067622758b6c7e9fb0d159198668,layers=
+meta-variscite-bsp-common,https://github.com/FrancescoFerraro/meta-variscite-bsp-common.git,dev_scarthgap_10.01.10.04_var01_RND-2750_am62p,7b3adc1c77d32a94a3b5593c912c0af3f10a6af6,layers=
+meta-variscite-bsp-ti,https://github.com/FrancescoFerraro/meta-variscite-bsp-ti.git,dev_scarthgap_10.01.10.04_var01_RND-2750_am62p,cd5971166dd3bf410267b9942179c1acbaf73240,layers=
+meta-variscite-sdk-common,https://github.com/FrancescoFerraro/meta-variscite-sdk-common.git,dev_scarthgap_10.01.10.04_var01_RND-2750_am62p,9a34d603ffddd0646bfa052be0276b98b8131d04,layers=
+meta-variscite-sdk-ti,https://github.com/FrancescoFerraro/meta-variscite-sdk-ti.git,dev_scarthgap_10.01.10.04_var01_RND-2750_am62p,12cca54ac777132a5c81e0c85ce6855d7ce53945,layers=
 meta-swupdate,https://github.com/sbabic/meta-swupdate.git,scarthgap,d598d4e675b541301ea1dfc8f0c8931983b4dcd0,layers=
 OECORELAYERCONF=./sample-files/bblayers.conf.sample
 OECORELOCALCONF=./sample-files/local-arago64-v2.conf.sample
