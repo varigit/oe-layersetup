@@ -16,7 +16,7 @@ meta-edgeai,https://git.ti.com/git/edgeai/meta-edgeai.git,scarthgap,10.01.10.04,
 meta-variscite-bsp-common,https://github.com/FrancescoFerraro/meta-variscite-bsp-common.git,dev_scarthgap_10.01.10.04_var01_RND-2750_am62p,7b3adc1c77d32a94a3b5593c912c0af3f10a6af6,layers=
 meta-variscite-bsp-ti,https://github.com/FrancescoFerraro/meta-variscite-bsp-ti.git,dev_scarthgap_10.01.10.04_var01_RND-2750_am62p,cd5971166dd3bf410267b9942179c1acbaf73240,layers=
 meta-variscite-sdk-common,https://github.com/FrancescoFerraro/meta-variscite-sdk-common.git,dev_scarthgap_10.01.10.04_var01_RND-2750_am62p,9a34d603ffddd0646bfa052be0276b98b8131d04,layers=
-meta-variscite-sdk-ti,https://github.com/FrancescoFerraro/meta-variscite-sdk-ti.git,dev_scarthgap_10.01.10.04_var01_RND-2750_am62p,12cca54ac777132a5c81e0c85ce6855d7ce53945,layers=
+meta-variscite-sdk-ti,https://github.com/FrancescoFerraro/meta-variscite-sdk-ti.git,dev_scarthgap_10.01.10.04_var01_RND-2750_am62p,13aa8056d2ef45e9cae0c153c32d3d5fe6978996,layers=
 meta-swupdate,https://github.com/sbabic/meta-swupdate.git,scarthgap,d598d4e675b541301ea1dfc8f0c8931983b4dcd0,layers=
 OECORELAYERCONF=./sample-files/bblayers.conf.sample
 OECORELOCALCONF=./sample-files/local-arago64-v2.conf.sample
