@@ -14,7 +14,7 @@ meta-clang,https://github.com/kraj/meta-clang,scarthgap,9fbfa9db33131abdf3870a94
 oe-core,https://git.openembedded.org/openembedded-core,scarthgap,dac630ab5ee7aa6c5c7c294093adbd11b116c765,layers=meta
 meta-edgeai,https://git.ti.com/git/edgeai/meta-edgeai.git,scarthgap,10.01.10.04,layers=
 meta-variscite-bsp-common,https://github.com/varigit/meta-variscite-bsp-common.git,scarthgap_6.6.52-2.2.0_var01,4881aa9adb7619e075a56c2d43f9f2d4824f5563,layers=
-meta-variscite-bsp-ti,https://github.com/varigit/meta-variscite-bsp-ti.git,scarthgap_10.01.10.04_var01,e531cb74f12ce2b20f743c90165250b16a3cdb57,layers=
+meta-variscite-bsp-ti,https://github.com/varigit/meta-variscite-bsp-ti.git,scarthgap_10.01.10.04_var02,d0ab922d17322db42755a37ad04a6e8ad5515a6b,layers=
 meta-variscite-sdk-common,https://github.com/varigit/meta-variscite-sdk-common.git,scarthgap_6.6.52-2.2.0_var01,0df45874209b363defdccf266504948bb385d332,layers=
 meta-variscite-sdk-ti,https://github.com/varigit/meta-variscite-sdk-ti.git,scarthgap_10.01.10.04_var01,cc6c0e3b4851ff8df9ee3b68247a81fca872ac62,layers=
 meta-swupdate,https://github.com/sbabic/meta-swupdate.git,scarthgap,d598d4e675b541301ea1dfc8f0c8931983b4dcd0,layers=
