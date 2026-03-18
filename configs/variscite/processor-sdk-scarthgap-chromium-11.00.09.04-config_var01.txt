@@ -13,8 +13,8 @@ meta-arm,https://git.yoctoproject.org/meta-arm,scarthgap,3cadb81ffaa9f03b92e3028
 meta-clang,https://github.com/kraj/meta-clang,scarthgap,b9ef02282197380ef05edbd0eb852e1934ceb59b,layers=
 oe-core,https://git.openembedded.org/openembedded-core,scarthgap,1be6d83466e3a0da4222ba502c2a86c25c835a35,layers=meta
 meta-variscite-bsp-ti,https://github.com/varigit/meta-variscite-bsp-ti.git,scarthgap_11.00.09.04_var01,0996df96ee36eca904763ec00efcb72bd9327010,layers=
-meta-variscite-sdk-common,https://github.com/varigit/meta-variscite-sdk-common.git,scarthgap_6.6.52-2.2.0_var01,31fd47933f01d4bd652554a2d903a97fa8a76ab2,layers=
-meta-variscite-bsp-common,https://github.com/varigit/meta-variscite-bsp-common.git,scarthgap_6.6.52-2.2.0_var01,ebb1e3e6f6d6f6294675016a33a4d51580194516,layers=
+meta-variscite-sdk-common,https://github.com/varigit/meta-variscite-sdk-common.git,scarthgap_6.6.52-2.2.2_var01,a8a35c2e8767ffcf14ec9a6cf9b9c8c15ff71241,layers=
+meta-variscite-bsp-common,https://github.com/varigit/meta-variscite-bsp-common.git,scarthgap_6.6.52-2.2.2_var01,a1e6bf75b176f165b677e6b75fff9cb95586d47a,layers=
 meta-variscite-sdk-ti,https://github.com/varigit/meta-variscite-sdk-ti.git,scarthgap_11.00.09.04_var01,3800e4eb0b33df76281de7722cc7a60ab847b518,layers=
 meta-swupdate,https://github.com/sbabic/meta-swupdate.git,scarthgap,d598d4e675b541301ea1dfc8f0c8931983b4dcd0,layers=
 meta-mender,https://github.com/mendersoftware/meta-mender.git,scarthgap,411b91dbf2f1de0c2cd12a6470bed97cb39079dc
