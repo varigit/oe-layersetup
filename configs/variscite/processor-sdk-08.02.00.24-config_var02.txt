@@ -7,7 +7,7 @@ meta-arago,https://github.com/varigit/meta-arago.git,08.02.00.006-var01,91800b0d
 #meta-browser,https://github.com/OSSystems/meta-browser.git,master,5f365ef0f842ba4651efe88787cf9c63bc8b6cb3,layers=
 meta-qt5,https://github.com/meta-qt5/meta-qt5.git,dunfell,5ef3a0f,layers=
 meta-virtualization,https://git.yoctoproject.org/meta-virtualization,dunfell,c5f61e5,layers=
-meta-openembedded,https://git.openembedded.org/meta-openembedded,dunfell,0722ff6,layers=meta-networking:meta-python:meta-oe:meta-gnome:meta-filesystems:meta-multimedia
+meta-openembedded,https://git.openembedded.org/meta-openembedded,dunfell,01358b6d7050,layers=meta-networking:meta-python:meta-oe:meta-gnome:meta-filesystems:meta-multimedia
 meta-ti,https://git.yoctoproject.org/meta-ti,dunfell,08.02.00.006,layers=
 meta-arm,https://git.yoctoproject.org/meta-arm,dunfell,c4f04f3,layers=meta-arm:meta-arm-toolchain
 oe-core,https://git.openembedded.org/openembedded-core,dunfell,51844f2,layers=meta
