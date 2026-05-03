@@ -3,7 +3,7 @@
 
 bitbake,https://git.openembedded.org/bitbake,1.46,d22cc1e
 meta-processor-sdk,https://git.ti.com/git/processor-sdk/meta-processor-sdk.git,dunfell,01876dc32daf5a31a643d26f7935d6cd35187d08,layers=
-meta-arago,https://github.com/varigit/meta-arago.git,08.02.00.006-var01,91800b0d6f5db1810fd8f3f823417736ad6b6226,layers=meta-arago-distro:meta-arago-extras
+meta-arago,https://git.yoctoproject.org/meta-arago,dunfell,86d19ced20934c8383c8a39f88d97c72e7e929ee,layers=meta-arago-distro:meta-arago-extras
 #meta-browser,https://github.com/OSSystems/meta-browser.git,master,5f365ef0f842ba4651efe88787cf9c63bc8b6cb3,layers=
 meta-qt5,https://github.com/meta-qt5/meta-qt5.git,dunfell,5ef3a0f,layers=
 meta-virtualization,https://git.yoctoproject.org/meta-virtualization,dunfell,c5f61e5,layers=
