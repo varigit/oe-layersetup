@@ -14,7 +14,7 @@ meta-clang,https://github.com/kraj/meta-clang,kirkstone-clang12,c2e89dc7e1dfcc1b
 oe-core,https://git.openembedded.org/openembedded-core,kirkstone,8a502301209ef144932ef5071c1a9b738db23270,layers=meta
 meta-variscite-bsp-common,https://github.com/varigit/meta-variscite-bsp-common.git,kirkstone-var01,3bd24a4d608501f177c7533a810bba344c437fa6,layers=
 meta-variscite-bsp-ti,https://github.com/varigit/meta-variscite-bsp-ti.git,kirkstone_09.02.01.10_var01,f58f84d68380778133ddcdf3caea99a5c74338f3,layers=
-meta-variscite-sdk-common,https://github.com/varigit/meta-variscite-sdk-common.git,kirkstone-var01,0f4175ab57ea8b7f659e58829bf97278ad67451f,layers=
+meta-variscite-sdk-common,https://github.com/varigit/meta-variscite-sdk-common.git,kirkstone-var01,ca7755b6af0a1add23db2b89e1bc861180a3dbf6,layers=
 meta-variscite-sdk-ti,https://github.com/varigit/meta-variscite-sdk-ti.git,kirkstone_09.02.01.10_var01,9e28380534f44caede2db87e5b8ab668b2a46c9c,layers=
 meta-swupdate,https://github.com/sbabic/meta-swupdate.git,kirkstone,6918be849ddf1fed5b7a0173e51c7a136e8d4101,layers=
 OECORELAYERCONF=./sample-files/bblayers.conf.sample
