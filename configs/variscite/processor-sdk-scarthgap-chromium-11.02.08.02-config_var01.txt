@@ -16,7 +16,7 @@ oe-core,https://git.openembedded.org/openembedded-core,scarthgap,1fbd9eddbdf0da0
 meta-variscite-bsp-ti,https://github.com/varigit/meta-variscite-bsp-ti.git,scarthgap_11.02.08.02_var01,a890fa32ffba4b0eb06a0b8b4b6fb0a88ede3b42,layers=
 meta-variscite-sdk-common,https://github.com/varigit/meta-variscite-sdk-common.git,scarthgap_6.6.52-2.2.2_var01,7b45393620f4496b4dfac1b5a71245377a8ccbde,layers=
 meta-variscite-bsp-common,https://github.com/varigit/meta-variscite-bsp-common.git,scarthgap_6.6.52-2.2.2_var01,8fa83af3b9c8d3894597cf75a7b2806957d1358a,layers=
-meta-variscite-sdk-ti,https://github.com/varigit/meta-variscite-sdk-ti.git,scarthgap_11.02.08.02_var01,3800e4eb0b33df76281de7722cc7a60ab847b518,layers=
+meta-variscite-sdk-ti,https://github.com/varigit/meta-variscite-sdk-ti.git,scarthgap_11.02.08.02_var01,fda2e98ac9bc48217dd3ff36d9a6b96f1853ec08,layers=
 meta-swupdate,https://github.com/sbabic/meta-swupdate.git,scarthgap,8c08983e9c4b47779bfe0f730b210366965afb9d,layers=
 meta-mender,https://github.com/mendersoftware/meta-mender.git,scarthgap,c3064a2767be4779589bd276079d7bb535dcb481
 meta-security,https://git.yoctoproject.org/meta-security,scarthgap,b13f1705d723650de61277670c8a76aadea4cfdd,layers=meta-tpm
