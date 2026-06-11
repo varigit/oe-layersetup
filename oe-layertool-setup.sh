@@ -136,7 +136,7 @@ check_input() {
     if [ ! -f "$inputfile" ]
     then
         printf '%s\n' "ERROR: the file \"$inputfile\" given for inputfile does not exist"
-        usage 
+        usage
     fi
 
     # If directories do not exist then create them
@@ -348,7 +348,7 @@ configure_repo() {
         printf '%s\n' "Skipping configuring duplicate repository"
         return 1
     fi
-  
+
     if [ -z "$uri" ]
     then
         get_repo_uri
@@ -416,10 +416,10 @@ get_repo_branch() {
 
         # Get a unique list of branches for the user to chose from
         # Also delete the origin/HEAD line that the -r option returns
-        t_branches=$(git branch -r | sed '/origin\/HEAD/d')
+        t_branches=$(git branch -r --format='%(refname:strip=3)' | grep -v '^HEAD$')
         for b in $t_branches
         do
-            branches="${branches}$(printf '%s\n' "$b" | sed 's:.*origin/::g')\n"
+            branches="${branches}$(printf '%s\n' "$b")\n"
         done
         branches=$(printf '%s\n' "$branches" | sort | uniq)
 
@@ -431,7 +431,7 @@ The $name repository has the following branches available:
 
 $branches
 
-What branch would you like to checkout for the $name repository? 
+What branch would you like to checkout for the $name repository?
 EOM
         read -r input
 
@@ -460,11 +460,11 @@ checkout_branch() {
     # Check if a local branch already exists to track the remote branch.
     # If not then create a tracking branch and checkout the branch
     # else just checkout the existing branch
-    if git branch | grep -q "$branch"
+    if git branch --format='%(refname:short)' | grep -q "^$branch\$"
     then
-        git checkout "origin/$branch" -b "$branch" --track
-    else
         git checkout "$branch"
+    else
+        git checkout "origin/$branch" -b "$branch" --track
     fi
 
     # Now that we are on the proper branch pull the remote branch changes if
@@ -658,7 +658,7 @@ get_oecorelayerconf() {
 
     done="n"
 
-    while [ "$done" != "y" ]
+    while [ "$done" != "y" ] && [ -n "$confs" ]
     do
 
 cat << EOM
@@ -713,7 +713,7 @@ get_oecorelocalconf() {
 
     done="n"
 
-    while [ "$done" != "y" ]
+    while [ "$done" != "y" ] && [ -n "$confs" ]
     do
 
 cat << EOM
@@ -765,7 +765,10 @@ NOTE: Any additional entries to this file will be lost if the $0
 
 EOM
     # First copy the template file
-    cp -f "$OECORELAYERCONFPATH" "$confdir/bblayers.conf"
+    if [ -n "$OECORELAYERCONFPATH" ]
+    then
+        cp -f "$OECORELAYERCONFPATH" "$confdir/bblayers.conf"
+    fi
 
     # Now add the layers we have configured to the BBLAYERS variable
 cat >> "$confdir/bblayers.conf" << EOM
@@ -806,7 +809,10 @@ EOM
     fi
 
     # First copy the template file
-    cp -f "$OECORELOCALCONFPATH" "$confdir/local.conf"
+    if [ -n "$OECORELOCALCONFPATH" ]
+    then
+        cp -f "$OECORELOCALCONFPATH" "$confdir/local.conf"
+    fi
 
     # If command line option was not set use the old dldir
     if [ -z "$dldir" ]
