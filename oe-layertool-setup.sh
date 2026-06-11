@@ -840,6 +840,13 @@ EOM
         } >> "$confdir/local.conf"
         rm "$oebase/tmp_append_local.conf"
     fi
+
+    # Enable vex and spx 3.0
+    echo "" >> $confdir/local.conf
+    echo '# Enable vex and spx 3.0' >> $confdir/local.conf
+    echo 'INHERIT += "vex"' >> $confdir/local.conf
+    echo 'INHERIT:remove = "create-spdx"' >> $confdir/local.conf
+    echo 'INHERIT += "create-spdx-3.0"' >> $confdir/local.conf
 }
 
 print_motd() {
