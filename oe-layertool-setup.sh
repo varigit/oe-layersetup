@@ -847,12 +847,17 @@ EOM
         rm "$oebase/tmp_append_local.conf"
     fi
 
-    # Enable vex and spx 3.0
-    echo "" >> $confdir/local.conf
-    echo '# Enable vex and spx 3.0' >> $confdir/local.conf
-    echo 'INHERIT += "vex"' >> $confdir/local.conf
-    echo 'INHERIT:remove = "create-spdx"' >> $confdir/local.conf
-    echo 'INHERIT += "create-spdx-3.0"' >> $confdir/local.conf
+    # Enable vex and spdx 3.0 if available
+    # This should be in oe-core/meta/classes, but maybe this changes in the future
+    if find "$sourcedir" -name "vex.bbclass" -print -quit | grep -q .; then
+        if find "$sourcedir" -name "create-spdx-3.0.bbclass" -print -quit | grep -q .; then
+            echo "" >> $confdir/local.conf
+            echo '# Enable vex and spdx 3.0' >> $confdir/local.conf
+            echo 'INHERIT += "vex"' >> $confdir/local.conf
+            echo 'INHERIT:remove = "create-spdx"' >> $confdir/local.conf
+            echo 'INHERIT += "create-spdx-3.0"' >> $confdir/local.conf
+        fi
+    fi
 }
 
 print_motd() {
